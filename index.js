@@ -17,12 +17,11 @@ app.get('/', (req, res) => {
 	res.send('ROY Club API for Google Spreadsheets')
 })
 
- 
 const { GoogleSpreadsheet } = require('google-spreadsheet')
 app.post('/add', async (req, res) => {
 	try {
-		const { id, data } = req.body,
-					doc = new GoogleSpreadsheet(id)
+		let { id, data, sheetId } = req.body,
+				doc = new GoogleSpreadsheet(id)
 
 		await doc.useServiceAccountAuth({
 			client_email: process.env.EMAIL,
@@ -30,10 +29,10 @@ app.post('/add', async (req, res) => {
 		})
 		await doc.loadInfo()
 	
-		const sheet = doc.sheetsByIndex[0]
+		const sheet = sheetId ? doc.sheetsById[sheetId] : doc.sheetsByIndex[0]
 		await sheet.addRow(data)
 
-		res.sendStatus(200)
+		res.send(`Data successfully added to '${doc.title}' spreadsheet`)
 	} catch (err) {
 		console.error(err)
 		res.sendStatus(500)
