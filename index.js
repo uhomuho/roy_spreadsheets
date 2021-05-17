@@ -31,8 +31,6 @@ app.post('/add', async (req, res) => {
 	
 		const sheet = sheetId ? doc.sheetsById[sheetId] : doc.sheetsByIndex[0]
 
-		data["Дата"] = `${new Date()}`
-
 		await sheet.addRow(data)
 
 		res.send(`Data successfully added to '${doc.title}' spreadsheet`)
